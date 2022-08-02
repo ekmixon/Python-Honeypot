@@ -56,8 +56,6 @@ def color_cmd(color):
     else:
         std_out_handle = ctypes.windll.kernel32.GetStdHandle(-11)
         handle = std_out_handle
-        if color == "reset":
-            pass
         if color == "grey":
             ctypes.windll.kernel32.SetConsoleTextAttribute(handle, 0x07)
         if color == "red":

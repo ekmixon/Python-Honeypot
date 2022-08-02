@@ -19,10 +19,7 @@ def is_excluded(path, dirs):
     :param dirs: list of excludes
     :return: Boolean
     """
-    for directory in dirs:
-        if path.startswith(directory):
-            return True
-    return False
+    return any(path.startswith(directory) for directory in dirs)
 
 
 class ContainerFilesHandler(FileSystemEventHandler):
@@ -33,7 +30,7 @@ class ContainerFilesHandler(FileSystemEventHandler):
 
     def on_any_event(self, event):
         if not (event.event_type == 'modified' and event.is_directory) \
-                and not is_excluded(event.src_path, self.EXCLUDES):
+                    and not is_excluded(event.src_path, self.EXCLUDES):
             insert_to_file_change_events_collection(
                 FileEventsData(
                     file_path=byte_to_str(event.src_path),

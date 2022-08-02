@@ -27,8 +27,8 @@ def encode_b64(data):
 class SMTPChannel(smtpd.SMTPChannel):
 
     def __init__(self, smtp_server, newsocket, fromaddr,\
-                 require_authentication=False,\
-                 credential_validator=None, map=None):
+                     require_authentication=False,\
+                     credential_validator=None, map=None):
         smtpd.SMTPChannel.__init__(self, smtp_server, newsocket, fromaddr)
         asynchat.async_chat.__init__(self, newsocket, map=map)
 
@@ -60,7 +60,7 @@ class SMTPChannel(smtpd.SMTPChannel):
             self.push('503 Duplicate HELO/EHLO')
         else:
             self.__greeting = arg
-            self.push('250-%s Hello %s' % (FQDN, arg))
+            self.push(f'250-{FQDN} Hello {arg}')
             self.push('250-AUTH LOGIN PLAIN')
             self.push('250 EHLO')
 
@@ -73,8 +73,8 @@ class SMTPChannel(smtpd.SMTPChannel):
             self.password = authbits[2]
             #print(self.fromaddr,self.newsocket)
             if self.credential_validator and \
-            self.credential_validator.validate(self.username,\
-                                               self.password,self.fromaddr):
+                self.credential_validator.validate(self.username,\
+                                                   self.password,self.fromaddr):
                 self.authenticated = True
                 self.push('235 Authentication successful.')
             else:
@@ -90,10 +90,7 @@ class SMTPChannel(smtpd.SMTPChannel):
             # handled.
             if len(split_args) == 2:
                 self.username = decode_b64(arg.split(' ')[1])
-                self.push('334 ' + encode_b64('Username'))
-            else:
-                self.push('334 ' + encode_b64('Username'))
-
+            self.push('334 ' + encode_b64('Username'))
         elif not self.username:
             self.username = decode_b64(arg)
             self.push('334 ' + encode_b64('Password'))
@@ -101,8 +98,8 @@ class SMTPChannel(smtpd.SMTPChannel):
             self.authenticating = False
             self.password = decode_b64(arg)
             if self.credential_validator and \
-               self.credential_validator.validate(self.username,\
-                                                  self.password):
+                   self.credential_validator.validate(self.username,\
+                                                      self.password):
                 self.authenticated = True
                 self.push('235 Authentication successful.')
             else:
@@ -115,7 +112,7 @@ class SMTPChannel(smtpd.SMTPChannel):
         line = EMPTYSTRING.join(self.__line)
 
         if self.debug:
-            self.logger.info('found_terminator(): data: %s' % repr(line))
+            self.logger.info(f'found_terminator(): data: {repr(line)}')
 
         self.__line = []
         if self.__state == self.COMMAND:
@@ -138,12 +135,15 @@ class SMTPChannel(smtpd.SMTPChannel):
                 arg = line[i + 1:].strip()
 
             # White list of operations that are allowed prior to AUTH.
-            if not command in ['AUTH', 'EHLO', 'HELO', 'NOOP', 'RSET', 'QUIT']:
-                if self.require_authentication and not self.authenticated:
-                    self.push('530 Authentication required')
-                    return
+            if (
+                command not in ['AUTH', 'EHLO', 'HELO', 'NOOP', 'RSET', 'QUIT']
+                and self.require_authentication
+                and not self.authenticated
+            ):
+                self.push('530 Authentication required')
+                return
 
-            method = getattr(self, 'smtp_' + command, None)
+            method = getattr(self, f'smtp_{command}', None)
             if not method:
                 self.push('502 Error: command "%s" not implemented' % command)
                 return

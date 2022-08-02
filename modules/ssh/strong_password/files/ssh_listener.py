@@ -21,19 +21,18 @@ class SSHServerHandler(paramiko.ServerInterface):
     def check_auth_password(self, username, password):
         LOGFILE_LOCK.acquire()
         try:
-            logfile_handle = open(LOGFILE, "a")
-            logfile_handle.write(
-                json.dumps(
-                    {
-                        "username": username,
-                        "password": password,
-                        "ip": str(self.ip),
-                        "module_name": "ssh/strong_password",
-                        'date': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    }
-                ) + "\n"
-            )
-            logfile_handle.close()
+            with open(LOGFILE, "a") as logfile_handle:
+                logfile_handle.write(
+                    json.dumps(
+                        {
+                            "username": username,
+                            "password": password,
+                            "ip": str(self.ip),
+                            "module_name": "ssh/strong_password",
+                            'date': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        }
+                    ) + "\n"
+                )
         finally:
             LOGFILE_LOCK.release()
         return paramiko.AUTH_FAILED

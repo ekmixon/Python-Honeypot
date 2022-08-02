@@ -25,7 +25,7 @@ from database.datatypes import (HoneypotEvent,
 from core.messages import load_messages
 
 # honeypot ports
-honeypot_ports = dict()
+honeypot_ports = {}
 messages = load_messages().message_contents
 
 
@@ -62,7 +62,7 @@ def get_gateway_ip_addresses(configuration):
 
 def force_kill_tshark():
     pid = os.popen('ps aux | grep tshark').readline().split()[1]
-    os.popen('kill -9 {} &> /dev/null'.format(pid)).read()
+    os.popen(f'kill -9 {pid} &> /dev/null').read()
     # wait to make sure tshark is gone!
     time.sleep(1)
     return
@@ -170,9 +170,10 @@ def network_traffic_capture(configuration, honeypot_events_queue, network_events
     # Ignore ports
     ignore_ports = network_config["ignore_real_machine_ports"]
 
-    # Display filter to be applied to the Live Captured network traffic
-    display_filter = ' and '.join(['ip.src!={0} and ip.dst!={0}'.format(_) for _ in ignore_ip_addresses])
-    display_filter += ' and ' if ignore_ip_addresses and ignore_ports else ""
+    display_filter = ' and '.join(
+        ['ip.src!={0} and ip.dst!={0}'.format(_) for _ in ignore_ip_addresses]
+    ) + (' and ' if ignore_ip_addresses and ignore_ports else "")
+
     display_filter += ' and '.join(['tcp.srcport!={0} and tcp.dstport!={0}'.format(_) for _ in ignore_ports])
 
     store_pcap = network_config["store_network_captured_files"]
@@ -201,9 +202,9 @@ def network_traffic_capture(configuration, honeypot_events_queue, network_events
         generation_time = datetime.fromtimestamp(file_timestamp).strftime("%Y-%m-%d %H:%M:%S")
         # File path of the network capture file with the timestamp
         output_file_path = os.path.join(
-            base_dir_path,
-            "captured-traffic-" + str(file_timestamp) + ".pcap"
+            base_dir_path, f"captured-traffic-{file_timestamp}.pcap"
         )
+
 
         if store_pcap:
             info(

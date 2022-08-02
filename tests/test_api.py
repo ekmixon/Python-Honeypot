@@ -17,239 +17,374 @@ class TestApi(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_count_all_events(self):
-        response = requests.get(API_URL + "/api/events/count/all")
+        response = requests.get(f"{API_URL}/api/events/count/all")
         self.assertGreaterEqual(response.json()["count"], 0)
         self.assertEqual(response.status_code, 200)
 
     def test_count_honeypot_events(self):
-        response = requests.get(API_URL + "/api/events/count/honeypot")
+        response = requests.get(f"{API_URL}/api/events/count/honeypot")
         self.assertGreaterEqual(response.json()["count"], 0)
         self.assertEqual(response.status_code, 200)
 
     def test_count_network_events(self):
-        response = requests.get(API_URL + "/api/events/count/network")
+        response = requests.get(f"{API_URL}/api/events/count/network")
         self.assertGreaterEqual(response.json()["count"], 0)
         self.assertEqual(response.status_code, 200)
 
     def test_count_credential_events(self):
-        response = requests.get(API_URL + "/api/events/count/credential")
+        response = requests.get(f"{API_URL}/api/events/count/credential")
         self.assertGreaterEqual(response.json()["count"], 0)
         self.assertEqual(response.status_code, 200)
 
     def test_count_file_events(self):
-        response = requests.get(API_URL + "/api/events/count/file")
+        response = requests.get(f"{API_URL}/api/events/count/file")
         self.assertGreaterEqual(response.json()["count"], 0)
         self.assertEqual(response.status_code, 200)
 
     def test_count_data_events(self):
-        response = requests.get(API_URL + "/api/events/count/data")
+        response = requests.get(f"{API_URL}/api/events/count/data")
         self.assertGreaterEqual(response.json()["count"], 0)
         self.assertEqual(response.status_code, 200)
 
-        response = requests.get(API_URL + "/api/events/count/data?date=2020-08-14")
+        response = requests.get(f"{API_URL}/api/events/count/data?date=2020-08-14")
         self.assertGreaterEqual(response.json()["count"], 0)
         self.assertEqual(response.status_code, 200)
 
     def test_top_ten_honeypot_events(self):
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/ip_dest")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/ip_dest?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/ip_dest?date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/ip_dest?country=US&date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/port_dest")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/port_dest?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/port_dest?date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
         response_port = requests.get(
-            API_URL + "/api/events/count/groupby/honeypot/port_dest?country=US&date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/username")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/username?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/username?date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/username?country=US&date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/password")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/password?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/password?date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/password?country=US&date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/machine_name")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/machine_name?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/machine_name?date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(
-            API_URL + "/api/events/count/groupby/honeypot/machine_name?country=US&date=2020-08-14"
+            f"{API_URL}/api/events/count/groupby/honeypot/ip_dest"
         )
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
 
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/country_ip_dest")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/country_ip_dest?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/honeypot/country_ip_dest?date=2020-08-14")
         self.assertGreaterEqual(len(response_port.json()), 0)
         self.assertEqual(response_port.status_code, 200)
 
         response_port = requests.get(
-            API_URL + "/api/events/count/groupby/honeypot/country_ip_dest?country_ip_dest=US&date=2020-08-14"
+            f"{API_URL}/api/events/count/groupby/honeypot/ip_dest?country=US"
         )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/ip_dest?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/ip_dest?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/port_dest"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/port_dest?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/port_dest?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/port_dest?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/username"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/username?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/username?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/username?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/password"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/password?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/password?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/password?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/machine_name"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/machine_name?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/machine_name?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/machine_name?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/country_ip_dest"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/country_ip_dest?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/country_ip_dest?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/honeypot/country_ip_dest?country_ip_dest=US&date=2020-08-14"
+        )
+
         self.assertGreaterEqual(len(response_port.json()), 0)
         self.assertEqual(response_port.status_code, 200)
 
     def test_top_ten_network_events(self):
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/ip_dest")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/ip_dest"
+        )
 
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/ip_dest?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/ip_dest?date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/ip_dest?country=US&date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/port_dest")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/port_dest?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/port_dest?date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/port_dest?country=US&date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/username")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/username?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/username?date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/username?country=US&date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/password")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/password?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/password?date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/password?country=US&date=2020-08-14")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/machine_name")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/machine_name?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/machine_name?date=2020-08-14")
         self.assertGreaterEqual(len(response_port.json()), 0)
         self.assertEqual(response_port.status_code, 200)
 
         response_port = requests.get(
-            API_URL + "/api/events/count/groupby/network/machine_name?country=US&date=2020-08-14"
+            f"{API_URL}/api/events/count/groupby/network/ip_dest?country=US"
         )
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
 
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/country_ip_dest")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/country_ip_dest?country=US")
-        self.assertGreaterEqual(len(response_port.json()), 0)
-        self.assertEqual(response_port.status_code, 200)
-
-        response_port = requests.get(API_URL + "/api/events/count/groupby/network/country_ip_dest?date=2020-08-14")
         self.assertGreaterEqual(len(response_port.json()), 0)
         self.assertEqual(response_port.status_code, 200)
 
         response_port = requests.get(
-            API_URL + "/api/events/count/groupby/network/country_ip_dest?country_ip_dest=US&date=2020-08-14"
+            f"{API_URL}/api/events/count/groupby/network/ip_dest?date=2020-08-14"
         )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/ip_dest?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/port_dest"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/port_dest?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/port_dest?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/port_dest?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/username"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/username?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/username?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/username?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/password"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/password?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/password?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/password?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/machine_name"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/machine_name?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/machine_name?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/machine_name?country=US&date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/country_ip_dest"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/country_ip_dest?country=US"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/country_ip_dest?date=2020-08-14"
+        )
+
+        self.assertGreaterEqual(len(response_port.json()), 0)
+        self.assertEqual(response_port.status_code, 200)
+
+        response_port = requests.get(
+            f"{API_URL}/api/events/count/groupby/network/country_ip_dest?country_ip_dest=US&date=2020-08-14"
+        )
+
         self.assertGreaterEqual(len(response_port.json()), 0)
         self.assertEqual(response_port.status_code, 200)
 

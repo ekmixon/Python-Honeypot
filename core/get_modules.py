@@ -61,14 +61,14 @@ def load_all_modules():
     #                      = ftp/weak_password
     module_names = []
     module_basepath = os.path.dirname(inspect.getfile(modules))
-    path_pattern = module_basepath + '/*/*/__init__.py'
+    path_pattern = f'{module_basepath}/*/*/__init__.py'
 
     for module in glob(path_pattern):
 
         module_dir = os.path.split(module)[0]
         sub_module_name = os.path.split(module_dir)[1]
         category_name = os.path.split(os.path.split(module_dir)[0])[1]
-        module_name = category_name + '/' + sub_module_name
+        module_name = f'{category_name}/{sub_module_name}'
         dockerfile_path = os.path.join(module_dir, "Dockerfile")
 
         if os.path.exists(dockerfile_path):

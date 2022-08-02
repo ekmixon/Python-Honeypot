@@ -64,15 +64,13 @@ def generate_randomize_int(number, plus, minus):
 def shifted_time(minutes=0, time_model="%I:%M %p"):
     dt = datetime.datetime.now()
     time_shifted = dt + datetime.timedelta(minutes=minutes)
-    time = time_shifted.strftime(time_model)
-    return time
+    return time_shifted.strftime(time_model)
 
 
 def shifted_date(days=0, date_model="%d-%m-%Y"):
     dt = datetime.datetime.now()
     date_shifted = dt + datetime.timedelta(days=days)
-    date = date_shifted.strftime(date_model)
-    return date
+    return date_shifted.strftime(date_model)
 
 
 def I10100():
@@ -3795,9 +3793,8 @@ def S05300():
 
 
 def save_log(log_data):
-    log_connections = open(logs_filename, "ab")
-    log_connections.write(json.dumps(log_data) + "\n")
-    log_connections.close()
+    with open(logs_filename, "ab") as log_connections:
+        log_connections.write(json.dumps(log_data) + "\n")
 
 
 # list of all commands
@@ -3952,7 +3949,7 @@ while True:
                         active_sockets.remove(conn)
                         conn.close()
                         continue
-                    while not ("\n" in response or "00" in response):
+                    while "\n" not in response and "00" not in response:
                         response += conn.recv(4096)
                     if response[0] != "\x01":
                         conn.close()
@@ -3977,7 +3974,7 @@ while True:
                     log_data["content"] = response
                     save_log(log_data)
                 except Exception as e:
-                    print("Unknown Error: {}".format(str(e)))
+                    print(f"Unknown Error: {str(e)}")
                     try:
                         log_data["content"] = response
                     except Exception:

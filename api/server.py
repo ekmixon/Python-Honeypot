@@ -210,9 +210,8 @@ def authorization_check():
     white_list_ips = app.config["OWASP_HONEYPOT_CONFIG"]["api_client_white_list_ips"]
     api_access_without_key = app.config["OWASP_HONEYPOT_CONFIG"]["api_access_without_key"]
 
-    if white_list_enabled:
-        if flask_request.remote_addr not in white_list_ips:
-            abort(403, "unauthorized IP")
+    if white_list_enabled and flask_request.remote_addr not in white_list_ips:
+        abort(403, "unauthorized IP")
     if not api_access_without_key:
         is_authorized()
     return
@@ -296,34 +295,43 @@ def count_events(event_type):
 
     date = get_value_from_request("date")
     try:
-        return jsonify(
-            {
-                "count": int(
-                    elasticsearch_events.count(
-                        index=event_types[event_type],
-                        body=filter_by_date(date)
-                    )['count']
-                    if date else
-                    elasticsearch_events.count(index=event_types[event_type])['count']
-                ),
-                "date": date
-            } if event_type != "all" else {
-                "count": sum(
-                    [
+        return (
+            jsonify(
+                {
+                    "count": int(
+                        elasticsearch_events.count(
+                            index=event_types[event_type],
+                            body=filter_by_date(date),
+                        )['count']
+                        if date
+                        else elasticsearch_events.count(
+                            index=event_types[event_type]
+                        )['count']
+                    ),
+                    "date": date,
+                }
+                if event_type != "all"
+                else {
+                    "count": sum(
                         int(
                             elasticsearch_events.count(
                                 index=event_types[event],
-                                body=filter_by_date(date)
+                                body=filter_by_date(date),
                             )['count']
-                            if date else
-                            elasticsearch_events.count(index=event_types[event])['count']
+                            if date
+                            else elasticsearch_events.count(
+                                index=event_types[event]
+                            )['count']
                         )
-                        for event in event_types if event != "all"
-                    ]
-                ),
-                "date": date,
-            }
-        ), 200
+                        for event in event_types
+                        if event != "all"
+                    ),
+                    "date": date,
+                }
+            ),
+            200,
+        )
+
     except Exception:
         abort(500)
 
@@ -543,8 +551,7 @@ def get_events_data(event_type):
             scroll_id = data['_scroll_id']
             scroll_size = len(data['hits']['hits'])
             while scroll_size > 0:
-                for record in data['hits']['hits']:
-                    records.append(record['_source'])
+                records.extend(record['_source'] for record in data['hits']['hits'])
                 data = elasticsearch_events.scroll(scroll_id=scroll_id, scroll='2m')
                 scroll_id = data['_scroll_id']
                 scroll_size = len(data['hits']['hits'])
@@ -596,7 +603,7 @@ def download_file():
     """
     try:
         md5_value = get_value_from_request("md5")
-        abort(404) if not md5_value else md5_value
+        md5_value or abort(404)
 
         fs = elasticsearch_events.search(
             index='ohp_file_archive',
@@ -672,9 +679,10 @@ def start_api_server():
 
     write_to_api_console(
         " * API access key: {0}\n".format(
-            api_access_key if not api_access_without_key else "NOT REQUIRED!"
+            "NOT REQUIRED!" if api_access_without_key else api_access_key
         )
     )
+
 
     app.config["OWASP_HONEYPOT_CONFIG"] = {
         "api_access_key": api_access_key,

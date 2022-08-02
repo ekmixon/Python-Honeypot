@@ -61,11 +61,12 @@ def module_configuration():
         "virtual_machine_port_number": 10001,
         "real_machine_port_number": 10001,
         "company_name_address": binascii.b2a_base64(
-            str(
-                "3356234 SL OIL 433234\r\n9346 GLODEN AVE."
-                "\r\nQUEEN SPRING, MD\r\n"
-            ).encode()
-        ).strip().decode(),
+            (
+                "3356234 SL OIL 433234\r\n9346 GLODEN AVE.\r\nQUEEN SPRING, MD\r\n".encode()
+            )
+        )
+        .strip()
+        .decode(),
         "extra_docker_options": ["--volume {0}/tmp:/tmp/".format(os.getcwd())],
-        "module_processor": ModuleProcessor()
+        "module_processor": ModuleProcessor(),
     }
