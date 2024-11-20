@@ -221,11 +221,8 @@ def create_new_images(configuration):
         # create files dir
         mkdir("files")
 
-        # create Dockerfile
-        dockerfile = open("Dockerfile", "w")
-        dockerfile.write(configuration[selected_module]["dockerfile"])
-        dockerfile.close()
-
+        with open("Dockerfile", "w") as dockerfile:
+            dockerfile.write(configuration[selected_module]["dockerfile"])
         # copy files
         copy_dir_tree(configuration[selected_module]["files"], "files")
 
@@ -515,10 +512,11 @@ def reserve_tcp_port(real_machine_port, module_name, configuration):
             if port_is_free(real_machine_port):
                 # unique_port = True
                 configuration[module_name]["real_machine_port_number"] = real_machine_port
-                duplicated_ports = []
-                for selected_module in configuration:
-                    duplicated_ports.append(
-                        configuration[selected_module]["real_machine_port_number"])
+                duplicated_ports = [
+                    configuration[selected_module]["real_machine_port_number"]
+                    for selected_module in configuration
+                ]
+
                 if duplicated_ports.count(real_machine_port) == 1:
                     info(messages["port_selected"].format(real_machine_port, module_name))
                     return real_machine_port
@@ -579,11 +577,10 @@ def stop_modules_processors(configuration):
     for module in configuration:
         configuration[module]["module_processor"].kill_flag = True
 
-    while True:
-        if True not in [
-            module_processor_thread.is_alive() for module_processor_thread in processor_threads
-        ]:
-            break
+    while True in [
+        module_processor_thread.is_alive()
+        for module_processor_thread in processor_threads
+    ]:
         time.sleep(0.1)
     return
 
@@ -780,7 +777,7 @@ def load_honeypot_engine():
         exit_success()
 
     # Check if the script is running with sudo
-    if not os.geteuid() == 0:
+    if os.geteuid() != 0:
         exit_failure(messages['script_must_run_as_root'])
     # Check timeout value if provided
     if argv_options.timeout_value < 1:

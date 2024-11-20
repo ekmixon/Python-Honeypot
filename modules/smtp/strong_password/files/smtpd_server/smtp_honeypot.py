@@ -15,20 +15,19 @@ class FakeCredentialValidator:
     def log_to_file(self, ip, port, username, password):
         self.output_lock.acquire()
         try:
-            logfile_handle = open(LOGFILE, "a")
-            logfile_handle.write(
-                json.dumps(
-                    {
-                        "ip": ip,
-                        "username": username,
-                        "password": password,
-                        "port": port,
-                        'date': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                        "module_name": "smtp/strong_password",
-                    }
-                ) + "\n"
-            )
-            logfile_handle.close()
+            with open(LOGFILE, "a") as logfile_handle:
+                logfile_handle.write(
+                    json.dumps(
+                        {
+                            "ip": ip,
+                            "username": username,
+                            "password": password,
+                            "port": port,
+                            'date': datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                            "module_name": "smtp/strong_password",
+                        }
+                    ) + "\n"
+                )
         finally:
             self.output_lock.release()
 

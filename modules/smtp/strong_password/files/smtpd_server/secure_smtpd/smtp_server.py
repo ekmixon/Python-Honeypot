@@ -82,8 +82,7 @@ class SMTPServer(smtpd.SMTPServer):
             except Exception as e:
                 if newsocket is not None:
                     self._shutdown_socket(newsocket)
-                self.logger.error('_accept_subprocess():'+
-                                  ' uncaught exception: %s' % str(e))
+                self.logger.error(('_accept_subprocess():' + f' uncaught exception: {str(e)}'))
 
     def _shutdown_socket(self, s):
         try:
@@ -98,8 +97,9 @@ class SMTPServer(smtpd.SMTPServer):
         asyncore.loop()
         if hasattr(signal, 'SIGTERM'):
             def sig_handler(signal,frame):
-                self.logger.info("Got signal %s, shutting down." % signal)
+                self.logger.info(f"Got signal {signal}, shutting down.")
                 sys.exit(0)
+
             signal.signal(signal.SIGTERM, sig_handler)
         while 1:
             time.sleep(1)

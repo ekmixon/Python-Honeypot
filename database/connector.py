@@ -37,8 +37,8 @@ event_types_elastic = event_types.copy()
 del event_types_elastic['all']
 
 # Event queues
-honeypot_events_queue = list()
-network_events_queue = list()
+honeypot_events_queue = []
+network_events_queue = []
 
 IP2Location = IP2Location.IP2Location(
     os.path.join(

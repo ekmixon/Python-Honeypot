@@ -57,11 +57,8 @@ def clientThread(conn, connip):
             if conn_data.startswith('PASS'):
                 login_user = login_user.replace('\n', '').replace('\r', '')
                 password = conn_data[5:].replace('\n', '').replace('\r', '')
-                if login_user in users.keys() and not (login_user == '*'):
-                    if users[login_user] == password:
-                        conn.sendall('230 Login successful.\n'.encode())
-                        log_msg = "SUCCESSFUL"
-                    elif users[login_user] == '*':
+                if login_user in users.keys() and login_user != '*':
+                    if users[login_user] in [password, '*']:
                         conn.sendall('230 Login successful.\n'.encode())
                         log_msg = "SUCCESSFUL"
                     else:
@@ -81,21 +78,20 @@ def clientThread(conn, connip):
                 print(log_msg)
                 LOGFILE_LOCK.acquire()
                 try:
-                    logfile_handle = open(LOGFILE, "a")
-                    logfile_handle.write(
-                        json.dumps(
-                            {
-                                "username": login_user,
-                                "password": password,
-                                "ip": connip,
-                                'login_status': log_msg,
-                                "module_name": "ftp/strong_password",
-                                'date':
-                                datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                            }
-                        ) + "\n"
-                    )
-                    logfile_handle.close()
+                    with open(LOGFILE, "a") as logfile_handle:
+                        logfile_handle.write(
+                            json.dumps(
+                                {
+                                    "username": login_user,
+                                    "password": password,
+                                    "ip": connip,
+                                    'login_status': log_msg,
+                                    "module_name": "ftp/strong_password",
+                                    'date':
+                                    datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                                }
+                            ) + "\n"
+                        )
                 finally:
                     LOGFILE_LOCK.release()
                     log_msg = ''
@@ -111,34 +107,33 @@ def init_ftp_server():
     print("FTP Honeypot running.")
     while 1:
         conn, addr = s.accept()
-        print("client logged in from IP:" + str(addr[0]) + ":" + str(addr[1]))
+        print(f"client logged in from IP:{str(addr[0])}:{str(addr[1])}")
         conn.sendall("220 (vsFTPd 3.0.3)\n".encode())
         _thread.start_new_thread(clientThread, (conn, str(addr[0])))
 
 
 def getDateTime():
     now = datetime.now()
-    currentDateTime = str(now.day) + "/" + str(now.month) + "/" + str(now.year)
-    return currentDateTime
+    return f"{str(now.day)}/{str(now.month)}/{str(now.year)}"
 
 
 if __name__ == '__main__':
-    print('Starting logging, Date (DD/MM/YY): ' + getDateTime() + "\n")
+    print(f'Starting logging, Date (DD/MM/YY): {getDateTime()}' + "\n")
     print("configuring server settings...")
     try:
         HOST, PORT = init_server_conf()
     except Exception as e:
-        print("FAILED: " + str(e))
+        print(f"FAILED: {str(e)}")
         print("configuring FTP users...")
     try:
         init_user_conf()
     except Exception as e:
-        print("FAILED: " + str(e))
+        print(f"FAILED: {str(e)}")
     REAL_HOST = HOST
     if REAL_HOST == '':
         REAL_HOST = '*'
-    print("Starting FTP Honeypot on: " + REAL_HOST + ":" + str(PORT) + "...")
+    print(f"Starting FTP Honeypot on: {REAL_HOST}:{str(PORT)}...")
     try:
         init_ftp_server()
     except Exception as e:
-        print("FAILED: " + str(e))
+        print(f"FAILED: {str(e)}")

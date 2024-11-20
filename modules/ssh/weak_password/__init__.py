@@ -19,7 +19,7 @@ class ModuleProcessor:
         self.log_filename = 'tmp/ohp_ssh_weak_password_logs.txt'
         self.log_filename_dump = 'tmp/ohp_ssh_weak_password_files_logs.json'
         self.stop_execution = False
-        self.DIRECTORY_TO_WATCH = os.getcwd() + "/tmp/ohp_ssh_weak_container/"
+        self.DIRECTORY_TO_WATCH = f"{os.getcwd()}/tmp/ohp_ssh_weak_container/"
         self.EXCLUDES = ['/dev']
         self.module_name = "ssh/weak_password"
         if not os.path.exists(self.DIRECTORY_TO_WATCH):

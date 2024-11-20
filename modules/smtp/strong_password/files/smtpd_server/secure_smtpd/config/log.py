@@ -20,10 +20,9 @@ class Log:
     def _add_handler(self):
         try:
             handler = RotatingFileHandler(
-                '/var/log/%s.log' % self.log_name,
-                maxBytes=10485760,
-                backupCount=3
+                f'/var/log/{self.log_name}.log', maxBytes=10485760, backupCount=3
             )
+
             formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
             handler.setFormatter(formatter)
             self.logger.addHandler(handler)

@@ -10,7 +10,7 @@ class ProcessPool:
         self._create_processes()
     
     def _create_processes(self):
-        for i in range(0, self.process_count):
+        for _ in range(self.process_count):
             process = Process(target=self.func, args=[self.queue])
             process.daemon = True
             process.start()

@@ -11,15 +11,11 @@ if sys.version < '3':
         return str(x)
 else:
     def u(x):
-        if isinstance(x, bytes):
-            return x.decode()
-        return x
+        return x.decode() if isinstance(x, bytes) else x
 
 
     def b(x):
-        if isinstance(x, bytes):
-            return x
-        return x.encode('ascii')
+        return x if isinstance(x, bytes) else x.encode('ascii')
 
 # Windows version of Python does not provide it
 #          for compatibility with older versions of Windows.
@@ -415,8 +411,7 @@ class IP2Location:
 
             if ipfrom <= ipno < ipto:
                 return self._read_record(mid, ipv)
+            if ipno < ipfrom:
+                high = mid - 1
             else:
-                if ipno < ipfrom:
-                    high = mid - 1
-                else:
-                    low = mid + 1
+                low = mid + 1

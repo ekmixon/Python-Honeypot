@@ -83,8 +83,9 @@ def check_for_requirements(start_api_server):
             )
         except Exception:
             exit_failure(
-                "pip3 install -r requirements.txt ---> " + module_name + " not installed!"
+                f"pip3 install -r requirements.txt ---> {module_name} not installed!"
             )
+
     # check elasticsearch
     try:
         connection = elasticsearch.Elasticsearch(

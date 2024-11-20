@@ -166,9 +166,7 @@ def fix_limit(limit):
     """
     if limit:
         try:
-            if int(limit) > 10000:
-                return 10000
-            return int(limit)
+            return min(int(limit), 10000)
         except Exception:
             pass
     return 10
